@@ -1,0 +1,123 @@
+---
+title: "Men's NCAA Wrestling Statistics"
+author: Angel Legrand
+---
+
+## 2025 team championship standings
+
+Compare the top 10 teams in each NCAA division. Select a division from the chart menu, or hover over a bar to see the team's points and head coach.
+
+```{r}
+#| echo: false
+library(tidyverse)
+library(plotly)
+
+team_results <- tribble(
+  ~division, ~rank, ~team, ~points, ~coach,
+  "Division I", 1, "Penn State", 177, "Cael Sanderson",
+  "Division I", 2, "Nebraska", 117, "Mark Manning",
+  "Division I", 3, "Oklahoma State", 107.5, "David Taylor",
+  "Division I", 4, "Iowa", 81, "Tom Brands",
+  "Division I", 5, "Minnesota", 51.5, "Brandon Eggum",
+  "Division I", 5, "Ohio State", 51.5, "Tom Ryan",
+  "Division I", 7, "Cornell", 50, "Mike Grey",
+  "Division I", 8, "NC State", 46.5, "Pat Popolizio",
+  "Division I", 9, "Northern Iowa", 45.5, "Doug Schwab",
+  "Division I", 10, "Illinois", 44.5, "Mike Poeta",
+  "Division II", 1, "Nebraska-Kearney", 115, "Dalton Jensen",
+  "Division II", 2, "Augustana (SD)", 63, "Jason Reitmeier",
+  "Division II", 3, "St. Cloud State", 57.5, "Steve Costanzo",
+  "Division II", 4, "Lander", 56, "R.C. LaHaye",
+  "Division II", 5, "Central Oklahoma", 55.5, "Todd Steidley",
+  "Division II", 6, "University of Mary", 51, "Adam Aho",
+  "Division II", 7, "Central Missouri", 43, "Cody Garcia",
+  "Division II", 8, "Kutztown", 42.5, "Not verified",
+  "Division II", 9, "Maryville (MO)", 39, "Not verified",
+  "Division II", 10, "West Liberty", 38.5, "Danny Irwin",
+  "Division III", 1, "JWU (Providence)", 83.5, "Lonnie Morris",
+  "Division III", 2, "Wartburg", 83.5, "Eric Keller",
+  "Division III", 3, "Augsburg", 74, "Tony Valek",
+  "Division III", 4, "Baldwin Wallace", 69, "Not verified",
+  "Division III", 5, "Wisconsin-La Crosse", 65, "Dave Malecek",
+  "Division III", 6, "Coe", 60, "Not verified",
+  "Division III", 6, "North Central (IL)", 60, "Not verified",
+  "Division III", 8, "Alvernia", 58, "Kriss Bellanca",
+  "Division III", 9, "Coast Guard", 40.5, "Kevin A. Bratland",
+  "Division III", 9, "Wisconsin-Eau Claire", 40.5, "Not verified"
+)
+
+divisions <- unique(team_results$division)
+chart <- plot_ly()
+
+for (division in divisions) {
+  division_data <- team_results |>
+    filter(.data$division == division) |>
+    mutate(team_label = paste(rank, team))
+
+  chart <- chart |>
+    add_trace(
+      data = division_data,
+      x = ~points,
+      y = ~team_label,
+      text = ~coach,
+      type = "bar",
+      orientation = "h",
+      name = division,
+      visible = division == "Division I",
+      hovertemplate = paste(
+        "<b>%{y}</b><br>",
+        "Championship points: %{x}<br>",
+        "Head coach: %{text}",
+        "<extra></extra>"
+      )
+    )
+}
+
+division_buttons <- map(divisions, \(division) {
+  list(
+    method = "update",
+    label = division,
+    args = list(
+      list(visible = divisions == division),
+      list(title = list(text = paste("2025 NCAA", division, "team points")))
+    )
+  )
+})
+
+chart |>
+  layout(
+    title = list(text = "2025 NCAA Division I team points"),
+    xaxis = list(title = "Championship points", rangemode = "tozero"),
+    yaxis = list(title = "", autorange = "reversed"),
+    updatemenus = list(list(
+      type = "dropdown",
+      buttons = division_buttons,
+      x = 1,
+      xanchor = "right",
+      y = 1.15
+    )),
+    height = 600
+  )
+```
+
+## Standings
+
+The table keeps the division rankings and coach names together for easy comparison. Coaches marked **Not verified** could not be confirmed in an accessible 2024–25 source.
+
+```{r}
+#| echo: false
+team_results |>
+  arrange(factor(division, levels = divisions), rank, team) |>
+  select(Division = division, Rank = rank, Team = team, Points = points, Coach = coach) |>
+  knitr::kable(caption = "2025 NCAA men's wrestling championship team standings")
+```
+
+## Sources
+
+Team rankings and championship points are from the NCAA records:
+
+- [Division I records (D1.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf)
+- [Division II records (D2.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D2.pdf)
+- [Division III records (D3.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D3.pdf)
+
+Coach names are shown for the 2024–25 championship season where verified. Unverified names are marked **Not verified** rather than guessed.
