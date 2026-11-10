@@ -2,6 +2,7 @@
 title: "Analysis Men's NCAA Wrestling"
 author: Angel Legrand
 format: html
+css: wrestling-background.css
 execute:
   echo: false
   message: false
@@ -12,7 +13,7 @@ I plan to make a website that gathers data from the NCAA website to help people 
 
 ## Top 10 teams by year
 
-Each point shows a team's championship points for that year, with the school logo and team name. Hover over a point for the coach and exact values. Rankings and points are from the [NCAA Division I wrestling records](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf); logos are loaded from official athletics sites and their image CDNs.
+Each point shows a team's championship points for that year, with the school logo and team name. Hover over a point for the coach and exact values. Click a logo to open the official NCAA brackets/results for that season; for 2015–2021, the link opens the NCAA championship history archive. Rankings and points are from the [NCAA Division I wrestling records](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf); logos are loaded from official athletics sites and their image CDNs.
 
 ```{r}
 #| echo: false
@@ -170,11 +171,27 @@ logo_lookup <- c(
   "Northern Iowa" = "https://unipanthers.com/images/logos/site/site.png"
 )
 
-logo_images <- team_results |>
+ncaa_results_url <- c(
+  "2025" = "https://www.ncaa.com/live-updates/wrestling/d1/2025-ncaa-wrestling-championships-schedule-brackets-results",
+  "2024" = "https://www.ncaa.com/live-updates/wrestling/d1/2024-ncaa-wrestling-championships-schedule-brackets-results",
+  "2023" = "https://www.ncaa.com/live-updates/wrestling/d1/penn-state-wins-2023-di-mens-ncaa-wrestling-team-title",
+  "2022" = "https://www.ncaa.com/live-updates/wrestling/d1/penn-state-wins-2022-ncaa-wrestling-team-title"
+)
+
+logo_positions <- team_results |>
   mutate(logo = unname(logo_lookup[team])) |>
+  mutate(
+    results_url = coalesce(
+      unname(ncaa_results_url[as.character(year)]),
+      "https://www.ncaa.com/history/wrestling-men/d1"
+    )
+  ) |>
   group_by(year, points) |>
   mutate(logo_x = year + (row_number() - (n() + 1) / 2) * 0.24) |>
-  ungroup() |>
+  ungroup()
+
+logo_images <- logo_positions |>
+  select(year, rank, team, points, coach, logo, logo_x) |>
   pmap(\(year, rank, team, points, coach, logo, logo_x) {
     list(
       source = logo,
@@ -217,10 +234,47 @@ team_results |>
     legend = list(title = list(text = "Team")),
     height = 950,
     images = logo_images
-  )
+  ) |>
+  add_trace(
+    data = logo_positions,
+    x = ~logo_x,
+    y = ~points,
+    text = ~paste(team, year, sep = " — "),
+    customdata = ~results_url,
+    type = "scatter",
+    mode = "markers",
+    marker = list(size = 44, color = "rgba(0, 0, 0, 0.01)"),
+    hovertemplate = paste(
+      "<b>%{text}</b><br>",
+      "Click to open official NCAA brackets/results",
+      "<extra></extra>"
+    ),
+    name = "NCAA results link",
+    showlegend = FALSE
+  ) |>
+  htmlwidgets::onRender("
+    function(el, x) {
+      el.on('plotly_click', function(eventData) {
+        var point = eventData.points[0];
+        if (point.data.name === 'NCAA results link') {
+          window.open(point.customdata, '_blank', 'noopener');
+        }
+      });
+    }
+  ")
 ```
 
 ## Division II and III championship points
+
+The Division II scatterplot compares the champion and runner-up from each of the
+last 10 completed championships (2015–2025; the 2020 championship was canceled).
+Scores are from the [NCAA Division II championship history](https://www.ncaa.com/history/wrestling-men/d2).
+Hover over a point for the team, placement, and points.
+
+The Division III chart shows the top two scoring positions at each completed
+championship since 2015, including all teams tied for a position. The 2020 and
+2021 championships were canceled. Scores are from the
+[NCAA Division III championship history](https://www.ncaa.com/history/wrestling-men/d3).
 
 ```{r}
 #| echo: false
@@ -249,53 +303,106 @@ d2_d3_results <- tribble(
   "Division III", 2025, 9, "Wisconsin-Eau Claire", 40.5, "Not verified"
 )
 
-d2_results <- d2_d3_results |>
-  filter(division == "Division II")
+d2_history <- tribble(
+  ~year, ~rank, ~team, ~points,
+  2015, 1, "St. Cloud State", 84.5,
+  2015, 2, "Nebraska-Kearney", 76.5,
+  2016, 1, "St. Cloud State", 90,
+  2016, 2, "Notre Dame (Ohio)", 82,
+  2017, 1, "Notre Dame (Ohio)", 103.5,
+  2017, 2, "St. Cloud State", 67,
+  2018, 1, "St. Cloud State", 91.5,
+  2018, 2, "Notre Dame (Ohio)", 84,
+  2019, 1, "St. Cloud State", 95.5,
+  2019, 2, "Wheeling Jesuit", 87.5,
+  2021, 1, "St. Cloud State", 107,
+  2021, 2, "Nebraska-Kearney", 105.5,
+  2022, 1, "Nebraska-Kearney", 127,
+  2022, 2, "Central Oklahoma", 86,
+  2023, 1, "Central Oklahoma", 121,
+  2023, 2, "Lander", 78,
+  2024, 1, "Central Oklahoma", 110,
+  2024, 2, "Lander", 86.5,
+  2025, 1, "Nebraska-Kearney", 115,
+  2025, 2, "Augustana (SD)", 63
+)
 
-d3_results <- d2_d3_results |>
-  filter(division == "Division III")
+d3_history <- tribble(
+  ~year, ~rank, ~team, ~points, ~coach,
+  2015, 1, "Augsburg", 100, "Jim Moulsoff",
+  2015, 2, "Wartburg", 89.5, "Eric Keller",
+  2016, 1, "Wartburg", 129.5, "Eric Keller",
+  2016, 2, "Messiah College", 100, "Not verified",
+  2017, 1, "Wartburg", 129.5, "Eric Keller",
+  2017, 2, "Augsburg", 79, "Jim Moulsoff",
+  2018, 1, "Wartburg", 136.5, "Eric Keller",
+  2018, 2, "Augsburg", 82, "Jim Moulsoff",
+  2019, 1, "Augsburg", 130, "Jim Moulsoff",
+  2019, 2, "Loras (Iowa)", 66, "Not verified",
+  2022, 1, "Wartburg", 79, "Eric Keller",
+  2022, 2, "Wabash", 78, "Not verified",
+  2023, 1, "Augsburg", 101, "Tony Valek",
+  2023, 2, "Wartburg", 66.5, "Eric Keller",
+  2024, 1, "Augsburg", 95, "Tony Valek",
+  2024, 2, "Wartburg", 87.5, "Eric Keller",
+  2025, 1, "Wartburg", 83.5, "Eric Keller",
+  2025, 1, "JWU (Providence)", 83.5, "Lonnie Morris",
+  2025, 2, "Augsburg", 74, "Tony Valek"
+)
 
-d2_chart <- d2_results |>
-  mutate(team_label = paste(rank, team)) |>
-  plot_ly(
-    x = ~points,
-    y = ~team_label,
-    type = "bar",
-    orientation = "h",
-    marker = list(color = "#1f77b4"),
-    text = ~points,
-    textposition = "outside",
-    customdata = ~coach,
-    hovertemplate = paste(
-      "<b>%{y}</b><br>",
-      "Championship points: %{x}<br>",
-      "Head coach: %{customdata}",
-      "<extra></extra>"
-    ),
-    showlegend = FALSE
-  )
-
-d3_chart <- d3_results |>
+d2_chart <- d2_history |>
   plot_ly(
     x = ~year,
     y = ~points,
     color = ~team,
     type = "scatter",
     mode = "markers",
+    marker = list(size = 12, opacity = 0.85),
+    text = ~paste0("Rank ", rank, ": ", team),
+    hovertemplate = paste(
+      "<b>%{text}</b><br>",
+      "Year: %{x}<br>",
+      "Championship points: %{y}",
+      "<extra></extra>"
+    ),
+    showlegend = TRUE
+  )
+
+d3_chart <- d3_history |>
+  group_by(year, points) |>
+  mutate(plot_year = year + (row_number() - (n() + 1) / 2) * 0.12) |>
+  ungroup() |>
+  plot_ly(
+    x = ~plot_year,
+    y = ~points,
+    color = ~team,
+    type = "scatter",
+    mode = "markers+text",
     marker = list(size = 11, opacity = 0.8),
-    text = ~paste(team, "<br>Coach: ", coach),
-    hovertemplate = "%{text}<br>Year: %{x}<br>Points: %{y}<extra></extra>",
+    text = ~team,
+    textposition = "top right",
+    customdata = ~year,
+    hovertemplate = paste(
+      "<b>%{text}</b><br>",
+      "Year: %{customdata}<br>",
+      "Championship points: %{y}",
+      "<extra></extra>"
+    ),
     showlegend = FALSE
   )
 
 d2_chart |>
   layout(
-    title = "2025 NCAA Division II national team points",
-    xaxis = list(title = "Championship points", rangemode = "tozero"),
-    yaxis = list(title = "", autorange = "reversed"),
-    margin = list(l = 180, r = 50),
-    showlegend = FALSE,
-    height = 550
+    title = "NCAA Division II championship points — top two teams (2015–2025)",
+    xaxis = list(
+      title = "Championship year",
+      tickmode = "array",
+      tickvals = c(2015:2019, 2021:2025),
+      range = c(2014.5, 2025.5)
+    ),
+    yaxis = list(title = "Championship points", rangemode = "tozero"),
+    legend = list(title = list(text = "Team")),
+    height = 650
   )
 
 ```
@@ -305,14 +412,15 @@ d2_chart |>
 
 d3_chart |>
   layout(
-    title = "2025 NCAA Division III team points",
+    title = "NCAA Division III championship points — top teams (2015–2025)",
     xaxis = list(
-      title = "Year",
+      title = "Championship year",
       tickmode = "array",
-      tickvals = 2025,
-      range = c(2024.5, 2027)
+      tickvals = c(2015:2019, 2022:2025),
+      range = c(2014.5, 2025.5)
     ),
     yaxis = list(title = "Championship points"),
-    showlegend = FALSE
+    showlegend = FALSE,
+    height = 650
   )
 ```
