@@ -1,6 +1,10 @@
 ---
 title: "Men's NCAA Wrestling Statistics"
 author: Angel Legrand
+execute:
+  echo: false
+  message: false
+  warning: false
 ---
 
 ## 2025 team championship standings
@@ -9,6 +13,8 @@ Compare the top 10 teams in each NCAA division. Select a division from the chart
 
 ```{r}
 #| echo: false
+#| message: false
+#| warning: false
 library(tidyverse)
 library(plotly)
 
@@ -106,6 +112,8 @@ The table keeps the division rankings and coach names together for easy comparis
 
 ```{r}
 #| echo: false
+#| message: false
+#| warning: false
 team_results |>
   arrange(factor(division, levels = divisions), rank, team) |>
   select(Division = division, Rank = rank, Team = team, Points = points, Coach = coach) |>

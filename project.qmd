@@ -2,18 +2,42 @@
 title: "Analysis Men's NCAA Wrestling"
 author: Angel Legrand
 format: html
+execute:
+  echo: false
+  message: false
+  warning: false
 ---
 
 I plan to make a website that gathers data from the NCAA website to help people find out more about the statistics of a team winning and takedown chances. 
 
 ## Top 10 teams by year
 
-Choose a year from the chart menu to compare the top Division I teams by championship points. Rankings and points are from the [NCAA Division I wrestling records](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf).
+Each point shows a team's championship points for that year, with the school logo and team name. Hover over a point for the coach and exact values. Rankings and points are from the [NCAA Division I wrestling records](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf); logos are loaded from official athletics sites and their image CDNs.
 
 ```{r}
 #| echo: false
 library(tidyverse)
 library(plotly)
+
+coach_lookup <- c(
+  "Penn State" = "Cael Sanderson",
+  "Nebraska" = "Mark Manning",
+  "Oklahoma State" = "David Taylor",
+  "Iowa" = "Tom Brands",
+  "Minnesota" = "Brandon Eggum",
+  "Ohio State" = "Tom Ryan",
+  "Cornell" = "Mike Grey",
+  "NC State" = "Pat Popolizio",
+  "Northern Iowa" = "Doug Schwab",
+  "Illinois" = "Mike Poeta",
+  "Michigan" = "Sean Bormet",
+  "Virginia Tech" = "Tony Robie",
+  "Arizona State" = "Zahid Valencia",
+  "Missouri" = "Brian Smith",
+  "Rutgers" = "Scott Goodale",
+  "Northwestern" = "Matt Nelson",
+  "Maria" = "Not verified"
+)
 
 team_results <- tribble(
   ~year, ~rank, ~team, ~points,
@@ -117,71 +141,178 @@ team_results <- tribble(
   2025, 8, "NC State", 46.5,
   2025, 9, "Northern Iowa", 45.5,
   2025, 10, "Illinois", 44.5
+) |>
+  mutate(
+    coach = coalesce(
+      coach_lookup[team],
+      "Not verified"
+    )
+  )
+
+logo_lookup <- c(
+  "Ohio State" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/ohiostatebuckeyes.com/images/logos/site/site.png",
+  "Iowa" = "https://hawkeyesports.com/imgproxy/lqIqR-KX-uiWAl2iptdTd_w4XZt92_RhaVI7wm5Rmjw/rs:fit:1980:0:0:0/g:ce:0:0/q:90/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2hhd2tleWVzcG9ydHMtcHJvZC8yMDIxLzAyL2NmNTQwOTkwLWxvZ28tZTE3MjI4NzU3NTYxNzgucG5n.png",
+  "Edinboro" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/edinboro.sidearmsports.com/images/logos/site/site.png",
+  "Missouri" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/mutigers.com/images/logos/site/site.png",
+  "Cornell" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/cornellbigred.com/images/logos/site/site.png",
+  "Penn State" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/gopsusports.com/images/logos/site/site.png",
+  "Oklahoma State" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/okstate.com/images/logos/site/site.png",
+  "Minnesota" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/gophersports.com/images/logos/site/site.png",
+  "Nebraska" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/huskers.com/images/logos/site/site.png",
+  "Virginia Tech" = "https://hokiesports.com/imgproxy/0CdA1rELWWEYF1dQeW2gvkBsewBKRQRr6Aer2GkXRBY/rs:fit:1980:0:0:0/g:ce:0:0/q:90/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3ZpcmdpbmlhdGVjaC1wcm9kLzIwMjQvMDMvMjAvTnV4UWtxUXQzd011b1hsVGJ0eG0yWkZ1cHFFWDBBSmZ3eW1ZWXpTWi5wbmc.ico",
+  "Illinois" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/fightingillini.com/images/logos/site/site.png",
+  "Michigan" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/mgoblue.com/images/logos/site/site.png",
+  "NC State" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/gopack.com/images/logos/site/site.png",
+  "Arizona State" = "https://sundevils.com/sites/default/files/favicon_0.ico",
+  "Rutgers" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/scarletknights.com/images/logos/site/site.png",
+  "Northwestern" = "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/nusports.com/images/logos/site/site.png",
+  "Iowa State" = "https://cyclones.com/images/logos/site/site.png",
+  "Northern Iowa" = "https://unipanthers.com/images/logos/site/site.png"
 )
 
-years <- as.character(2025:2015)
-chart <- plot_ly()
-
-for (year in years) {
-  year_data <- team_results |>
-    filter(.data$year == as.integer(year)) |>
-    arrange(desc(points)) |>
-    mutate(team_label = paste(rank, team))
-
-  chart <- chart |>
-    add_trace(
-      data = year_data,
-      x = ~points,
-      y = ~team_label,
-      type = "bar",
-      orientation = "h",
-      name = year,
-      visible = year == "2025",
-      hovertemplate = "%{y}<br>Team points: %{x}<extra></extra>"
+logo_images <- team_results |>
+  mutate(logo = unname(logo_lookup[team])) |>
+  group_by(year, points) |>
+  mutate(logo_x = year + (row_number() - (n() + 1) / 2) * 0.24) |>
+  ungroup() |>
+  pmap(\(year, rank, team, points, coach, logo, logo_x) {
+    list(
+      source = logo,
+      x = logo_x,
+      y = points,
+      xref = "x",
+      yref = "y",
+      sizex = 0.2,
+      sizey = 4,
+      xanchor = "center",
+      yanchor = "middle",
+      sizing = "contain",
+      layer = "above"
     )
-}
+  })
 
-year_buttons <- map(years, \(year) {
-  message <- case_when(
-    year == "2020" ~ "The 2020 championship was canceled due to the COVID-19 pandemic.",
-    TRUE ~ ""
-  )
-
-  list(
-    method = "update",
-    label = year,
-    args = list(
-      list(visible = years == year),
-      list(
-        title = list(text = paste("Top 10 NCAA Division I teams —", year)),
-        annotations = if (nzchar(message)) {
-          list(list(
-            text = message,
-            x = 0.5,
-            y = 0.5,
-            xref = "paper",
-            yref = "paper",
-            showarrow = FALSE
-          ))
-        } else {
-          list()
-        }
-      )
-    )
-  )
-})
-
-chart |>
+team_results |>
+  plot_ly(
+    x = ~year,
+    y = ~points,
+    color = ~team,
+    type = "scatter",
+    mode = "markers+text",
+    marker = list(size = 17, opacity = 0.8),
+    text = ~team,
+    textposition = "top right",
+    customdata = ~coach,
+    hovertemplate = "%{text}<br>Coach: %{customdata}<br>Year: %{x}<br>Points: %{y}<extra></extra>",
+    showlegend = TRUE
+  ) |>
   layout(
-    title = list(text = "Top 10 NCAA Division I teams — 2025"),
+    title = "Top 10 NCAA Division I team points by year (2015–2025)",
+    xaxis = list(
+      title = "Year",
+      tickmode = "array",
+      tickvals = 2015:2025,
+      range = c(2014.5, 2025.5)
+    ),
+    yaxis = list(title = "Championship points"),
+    legend = list(title = list(text = "Team")),
+    height = 950,
+    images = logo_images
+  )
+```
+
+## Division II and III championship points
+
+```{r}
+#| echo: false
+
+d2_d3_results <- tribble(
+  ~division, ~year, ~rank, ~team, ~points, ~coach,
+  "Division II", 2025, 1, "Nebraska-Kearney", 115, "Dalton Jensen",
+  "Division II", 2025, 2, "Augustana (SD)", 63, "Jason Reitmeier",
+  "Division II", 2025, 3, "St. Cloud State", 57.5, "Steve Costanzo",
+  "Division II", 2025, 4, "Lander", 56, "R.C. LaHaye",
+  "Division II", 2025, 5, "Central Oklahoma", 55.5, "Todd Steidley",
+  "Division II", 2025, 6, "University of Mary", 51, "Adam Aho",
+  "Division II", 2025, 7, "Central Missouri", 43, "Cody Garcia",
+  "Division II", 2025, 8, "Kutztown", 42.5, "Not verified",
+  "Division II", 2025, 9, "Maryville (MO)", 39, "Not verified",
+  "Division II", 2025, 10, "West Liberty", 38.5, "Danny Irwin",
+  "Division III", 2025, 1, "JWU (Providence)", 83.5, "Lonnie Morris",
+  "Division III", 2025, 2, "Wartburg", 83.5, "Eric Keller",
+  "Division III", 2025, 3, "Augsburg", 74, "Tony Valek",
+  "Division III", 2025, 4, "Baldwin Wallace", 69, "Not verified",
+  "Division III", 2025, 5, "Wisconsin-La Crosse", 65, "Dave Malecek",
+  "Division III", 2025, 6, "Coe", 60, "Not verified",
+  "Division III", 2025, 6, "North Central (IL)", 60, "Not verified",
+  "Division III", 2025, 8, "Alvernia", 58, "Kriss Bellanca",
+  "Division III", 2025, 9, "Coast Guard", 40.5, "Kevin A. Bratland",
+  "Division III", 2025, 9, "Wisconsin-Eau Claire", 40.5, "Not verified"
+)
+
+d2_results <- d2_d3_results |>
+  filter(division == "Division II")
+
+d3_results <- d2_d3_results |>
+  filter(division == "Division III")
+
+d2_chart <- d2_results |>
+  mutate(team_label = paste(rank, team)) |>
+  plot_ly(
+    x = ~points,
+    y = ~team_label,
+    type = "bar",
+    orientation = "h",
+    marker = list(color = "#1f77b4"),
+    text = ~points,
+    textposition = "outside",
+    customdata = ~coach,
+    hovertemplate = paste(
+      "<b>%{y}</b><br>",
+      "Championship points: %{x}<br>",
+      "Head coach: %{customdata}",
+      "<extra></extra>"
+    ),
+    showlegend = FALSE
+  )
+
+d3_chart <- d3_results |>
+  plot_ly(
+    x = ~year,
+    y = ~points,
+    color = ~team,
+    type = "scatter",
+    mode = "markers",
+    marker = list(size = 11, opacity = 0.8),
+    text = ~paste(team, "<br>Coach: ", coach),
+    hovertemplate = "%{text}<br>Year: %{x}<br>Points: %{y}<extra></extra>",
+    showlegend = FALSE
+  )
+
+d2_chart |>
+  layout(
+    title = "2025 NCAA Division II national team points",
     xaxis = list(title = "Championship points", rangemode = "tozero"),
     yaxis = list(title = "", autorange = "reversed"),
-    updatemenus = list(list(
-      type = "dropdown",
-      buttons = year_buttons,
-      x = 1,
-      xanchor = "right",
-      y = 1.15
-    ))
+    margin = list(l = 180, r = 50),
+    showlegend = FALSE,
+    height = 550
+  )
+
+```
+
+```{r}
+#| echo: false
+
+d3_chart |>
+  layout(
+    title = "2025 NCAA Division III team points",
+    xaxis = list(
+      title = "Year",
+      tickmode = "array",
+      tickvals = 2025,
+      range = c(2024.5, 2027)
+    ),
+    yaxis = list(title = "Championship points"),
+    showlegend = FALSE
   )
 ```
