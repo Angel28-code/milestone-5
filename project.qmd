@@ -264,6 +264,166 @@ team_results |>
   ")
 ```
 
+## Wrestler wins and losses by weight
+
+Choose a championship year and weight class to compare every wrestler in the
+NCAA bracket by their season wins and losses. Click a point to view the
+wrestler's record and links to a bio search and the official bracket. The
+bracket data for 2022 and 2023–2025 are included; the 2020 tournament was
+canceled. The 2022 records are from the
+[official NCAA bracket PDF](https://www.ncaa.com/sites/default/files/public/files/2022-03/Brackets%20-%20Session%206.pdf).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+wrestler_records <- readr::read_csv(
+  "ncaa_wrestler_records.csv",
+  show_col_types = FALSE
+)
+
+years <- sort(unique(wrestler_records$year), decreasing = TRUE)
+weights <- sort(unique(wrestler_records$weight))
+default_year <- years[1]
+default_weight <- weights[1]
+wrestler_chart <- plot_ly()
+
+for (year in years) {
+  for (weight in weights) {
+    weight_data <- wrestler_records |>
+      filter(.data$year == year, .data$weight == weight) |>
+      mutate(
+        bio_url = paste0(
+          "https://en.wikipedia.org/w/index.php?search=",
+          utils::URLencode(wrestler, reserved = TRUE)
+        ),
+        bio = paste0(
+          wrestler, " (", school_code, ") — ", year, ", ",
+          weight, " lb. Season record: ", wins, "-", losses, "."
+        ),
+        click_data = paste(bio, bio_url, source, sep = "|")
+      )
+
+    wrestler_chart <- wrestler_chart |>
+      add_trace(
+        data = weight_data,
+        x = ~wins,
+        y = ~losses,
+        type = "scatter",
+        mode = "markers",
+        text = ~wrestler,
+        customdata = ~click_data,
+        marker = list(size = 9, color = "#2c7fb8", opacity = 0.75),
+        hovertemplate = paste(
+          "<b>%{text}</b><br>",
+          "Season record: %{x} wins, %{y} losses<br>",
+          "Click for wrestler details",
+          "<extra></extra>"
+        ),
+        name = paste(year, weight, "lb"),
+        visible = year == default_year && weight == default_weight,
+        showlegend = FALSE
+      )
+  }
+}
+
+htmltools::tags$div(
+  class = "wrestler-chart-controls",
+  htmltools::tags$label(
+    `for` = "wrestler-year",
+    htmltools::tags$span("Championship year"),
+    htmltools::tags$select(
+      id = "wrestler-year",
+      lapply(years, \(year) {
+        htmltools::tags$option(
+          value = year,
+          selected = year == default_year,
+          year
+        )
+      })
+    )
+  ),
+  htmltools::tags$span(" "),
+  htmltools::tags$label(
+    `for` = "wrestler-weight",
+    htmltools::tags$span("Weight class"),
+    htmltools::tags$select(
+      id = "wrestler-weight",
+      lapply(weights, \(weight) {
+        htmltools::tags$option(
+          value = weight,
+          selected = weight == default_weight,
+          paste(weight, "lb")
+        )
+      })
+    )
+  )
+)
+
+htmltools::tags$div(
+  id = "wrestler-bio",
+  style = paste(
+    "display:none; margin: 0.75rem 0; padding: 1rem;",
+    "border-left: 4px solid #2c7fb8; background: #f3f7fa;"
+  ),
+  htmltools::tags$strong(id = "wrestler-bio-title"),
+  htmltools::tags$p(id = "wrestler-bio-details"),
+  htmltools::tags$a(
+    id = "wrestler-bio-link",
+    href = "#",
+    target = "_blank",
+    rel = "noopener",
+    "Find wrestler bio"
+  ),
+  htmltools::tags$span(" · "),
+  htmltools::tags$a(
+    id = "wrestler-bio-source",
+    href = "#",
+    target = "_blank",
+    rel = "noopener",
+    "Open official NCAA bracket"
+  )
+)
+
+wrestler_chart |>
+  layout(
+    title = paste("NCAA participants —", default_year),
+    xaxis = list(title = "Season wins", rangemode = "tozero"),
+    yaxis = list(title = "Season losses", rangemode = "tozero"),
+    height = 600
+  ) |>
+  htmlwidgets::onRender("
+    function(el, x) {
+      var yearSelect = document.getElementById('wrestler-year');
+      var weightSelect = document.getElementById('wrestler-weight');
+      function updateChart() {
+        var selectedYear = yearSelect.value;
+        var selectedWeight = weightSelect.value;
+        var visibility = el.data.map(function(trace) {
+          return trace.name === selectedYear + ' ' + selectedWeight + ' lb';
+        });
+        Plotly.restyle(el, {visible: visibility});
+        Plotly.relayout(el, {
+          'title.text': 'NCAA participants — ' + selectedYear + ', ' + selectedWeight + ' lb'
+        });
+      }
+      yearSelect.addEventListener('change', updateChart);
+      weightSelect.addEventListener('change', updateChart);
+      el.on('plotly_click', function(eventData) {
+        var point = eventData.points[0];
+        var details = point.data.customdata[point.pointNumber].split('|');
+        var panel = document.getElementById('wrestler-bio');
+        document.getElementById('wrestler-bio-title').textContent = point.text;
+        document.getElementById('wrestler-bio-details').textContent = details[0];
+        document.getElementById('wrestler-bio-link').href = details[1];
+        document.getElementById('wrestler-bio-source').href = details[2];
+        panel.style.display = 'block';
+      });
+    }
+  ")
+```
+
 ## Division II and III championship points
 
 The Division II scatterplot compares the champion and runner-up from each of the
