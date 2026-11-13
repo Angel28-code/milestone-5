@@ -289,40 +289,39 @@ default_year <- years[1]
 default_weight <- weights[1]
 wrestler_chart <- plot_ly()
 
-for (year in years) {
-  for (weight in weights) {
+for (current_year in years) {
+  for (current_weight in weights) {
     weight_data <- wrestler_records |>
-      filter(.data$year == year, .data$weight == weight) |>
+      filter(year == current_year, weight == current_weight) |>
       mutate(
         bio_url = paste0(
           "https://en.wikipedia.org/w/index.php?search=",
           utils::URLencode(wrestler, reserved = TRUE)
         ),
         bio = paste0(
-          wrestler, " (", school_code, ") — ", year, ", ",
-          weight, " lb. Season record: ", wins, "-", losses, "."
+          wrestler, " (", school_code, ") — ", current_year, ", ",
+          current_weight, " lb. Season record: ", wins, "-", losses, "."
         ),
         click_data = paste(bio, bio_url, source, sep = "|")
       )
 
     wrestler_chart <- wrestler_chart |>
       add_trace(
-        data = weight_data,
-        x = ~wins,
-        y = ~losses,
+        x = weight_data$wins,
+        y = weight_data$losses,
         type = "scatter",
         mode = "markers",
-        text = ~wrestler,
-        customdata = ~click_data,
+        text = weight_data$wrestler,
+        customdata = weight_data$click_data,
         marker = list(size = 9, color = "#2c7fb8", opacity = 0.75),
         hovertemplate = paste(
-          "<b>%{text}</b><br>",
+          "<b>%{text}</b> (", current_weight, " lb)<br>",
           "Season record: %{x} wins, %{y} losses<br>",
           "Click for wrestler details",
           "<extra></extra>"
         ),
-        name = paste(year, weight, "lb"),
-        visible = year == default_year && weight == default_weight,
+        name = paste(current_year, current_weight, "lb"),
+        visible = current_year == default_year && current_weight == default_weight,
         showlegend = FALSE
       )
   }
@@ -388,7 +387,7 @@ htmltools::tags$div(
 
 wrestler_chart |>
   layout(
-    title = paste("NCAA participants —", default_year),
+    title = paste0("NCAA participants — ", default_year, ", ", default_weight, " lb"),
     xaxis = list(title = "Season wins", rangemode = "tozero"),
     yaxis = list(title = "Season losses", rangemode = "tozero"),
     height = 600

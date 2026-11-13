@@ -1,0 +1,123 @@
+---
+title: "Team & Wrestler Explorer"
+author: "Angel Legrand"
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+Use the explorer below to look up any NCAA Division I wrestling team, view their all-time tournament record (2022–2025), and explore individual wrestler records.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(DT)
+library(crosstalk)
+
+records <- read_csv("ncaa_wrestler_records.csv", show_col_types = FALSE)
+
+school_names <- c(
+  "AF" = "Air Force", "AMER" = "American", "APP" = "App State", "ARMY" = "Army West Point",
+  "ASU" = "Arizona State", "BELL" = "Bellarmine", "BING" = "Binghamton", "BLO" = "Bloomsburg",
+  "BLOO" = "Bloomsburg", "BRWN" = "Brown", "BUCK" = "Bucknell", "BUFF" = "Buffalo",
+  "CAMP" = "Campbell", "CBU" = "California Baptist", "CHAT" = "Chattanooga", "CIT" = "The Citadel",
+  "CLAR" = "Clarion", "CMU" = "Central Michigan", "COL" = "Columbia", "COR" = "Cornell",
+  "CP" = "Cal Poly", "POLY" = "Cal Poly", "CSU" = "Cleveland State", "CSUB" = "CSU Bakersfield",
+  "DREX" = "Drexel", "DUKE" = "Duke", "EDIN" = "Edinboro", "F&M" = "Franklin & Marshall",
+  "FM" = "Franklin & Marshall", "GMU" = "George Mason", "GW" = "Gardner-Webb", "HAR" = "Harvard",
+  "HARV" = "Harvard", "HOF" = "Hofstra", "ILL" = "Illinois", "IND" = "Indiana",
+  "IOWA" = "Iowa", "ISU" = "Iowa State", "KENT" = "Kent State", "LEH" = "Lehigh",
+  "LH" = "Lock Haven", "LHU" = "Lock Haven", "LIU" = "LIU", "LR" = "Little Rock",
+  "UALR" = "Little Rock", "MD" = "Maryland", "MICH" = "Michigan", "MINN" = "Minnesota",
+  "MIZZ" = "Missouri", "MSU" = "Michigan State", "NAVY" = "Navy", "NCST" = "NC State",
+  "NDSU" = "North Dakota State", "NEB" = "Nebraska", "NIU" = "Northern Illinois", "NW" = "Northwestern",
+  "OHIO" = "Ohio", "OHST" = "Ohio State", "OKLA" = "Oklahoma", "OU" = "Oklahoma",
+  "OKST" = "Oklahoma State", "ORST" = "Oregon State", "PENN" = "Penn", "PITT" = "Pittsburgh",
+  "PRIN" = "Princeton", "PSU" = "Penn State", "PUR" = "Purdue", "RID" = "Rider",
+  "RUT" = "Rutgers", "SDSU" = "South Dakota State", "SIUE" = "SIU Edwardsville", "STAN" = "Stanford",
+  "UNC" = "North Carolina", "UNCO" = "Northern Colorado", "UNI" = "Northern Iowa", "UVA" = "Virginia",
+  "UVU" = "Utah Valley", "VMI" = "VMI", "VT" = "Virginia Tech", "WIS" = "Wisconsin",
+  "WVU" = "West Virginia", "WYO" = "Wyoming"
+)
+
+wrestlers <- records |>
+  mutate(
+    school_name = recode(school_code, !!!school_names, .default = school_code),
+    team = paste0(school_name, " (", school_code, ")")
+  ) |>
+  group_by(team, school_name, wrestler) |>
+  summarise(
+    years = paste(sort(unique(year)), collapse = ", "),
+    weights = paste(sort(unique(weight)), collapse = ", "),
+    total_wins = sum(wins),
+    total_losses = sum(losses),
+    win_pct = round(100 * total_wins / (total_wins + total_losses), 1),
+    record = paste0(total_wins, "-", total_losses),
+    .groups = "drop"
+  ) |>
+  arrange(team, desc(total_wins))
+
+shared_wrestlers <- SharedData$new(wrestlers)
+```
+
+## Team selector
+
+```{r}
+#| echo: false
+filter_select(
+  id = "team-filter",
+  label = "Choose a team to filter wrestlers:",
+  sharedData = shared_wrestlers,
+  group = ~team,
+  multiple = TRUE
+)
+```
+
+## Wrestler records
+
+```{r}
+#| echo: false
+datatable(
+  shared_wrestlers,
+  colnames = c("Team", "School", "Wrestler", "Years", "Weight Class(es)", "Wins", "Losses", "Win %", "All-Time Record"),
+  options = list(
+    pageLength = 15,
+    autoWidth = TRUE,
+    columnDefs = list(
+      list(targets = 1, visible = FALSE)
+    )
+  ),
+  rownames = FALSE,
+  class = "cell-border stripe hover"
+)
+```
+
+## All-time team summary
+
+All-time tournament records (2022–2025) aggregated across all wrestlers for each team:
+
+```{r}
+#| echo: false
+team_summary <- wrestlers |>
+  group_by(team) |>
+  summarise(
+    wrestlers = n(),
+    total_wins = sum(total_wins),
+    total_losses = sum(total_losses),
+    win_pct = round(100 * total_wins / (total_wins + total_losses), 1),
+    record = paste0(total_wins, "-", total_losses),
+    .groups = "drop"
+  ) |>
+  arrange(desc(total_wins))
+
+datatable(
+  team_summary,
+  colnames = c("Team", "Tournament Wrestlers", "Total Wins", "Total Losses", "Win %", "Team All-Time Record"),
+  options = list(pageLength = 10, autoWidth = TRUE),
+  rownames = FALSE,
+  class = "cell-border stripe hover"
+)
+```

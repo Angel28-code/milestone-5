@@ -1,0 +1,93 @@
+---
+title: "Sources"
+author: Angel Legrand
+format: html
+css: wrestling-background.css
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+Data sources for team scores and tournament brackets:
+
+- [NCAA Division I Records (D1.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D1.pdf)
+- [NCAA Division II Records (D2.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D2.pdf)
+- [NCAA Division III Records (D3.pdf)](https://s3.amazonaws.com/fs.ncaa.org/Docs/stats/wrestling_champs_records/D3.pdf)
+- Official tournament brackets and NCAA championship history archives.
+
+## NCAA Freshman & Redshirt Freshman Champions
+
+Winning an NCAA Division I wrestling title as a freshman is one of collegiate sports' rarest achievements. This chart displays modern true freshman champions alongside notable redshirt freshman title winners.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(plotly)
+
+freshman_champs <- tribble(
+  ~year, ~wrestler, ~school, ~weight, ~type,
+  1979, "Darryl Burley", "Lehigh", "134 lb", "True Freshman",
+  1990, "Pat Smith", "Oklahoma State", "158 lb", "Redshirt Freshman",
+  1999, "Cael Sanderson", "Iowa State", "184 lb", "Redshirt Freshman",
+  2003, "Teyon Ware", "Oklahoma", "141 lb", "True Freshman",
+  2006, "Dustin Schlatter", "Minnesota", "149 lb", "True Freshman",
+  2010, "Kyle Dake", "Cornell", "141 lb", "True Freshman",
+  2012, "Logan Stieber", "Ohio State", "133 lb", "Redshirt Freshman",
+  2014, "J'den Cox", "Missouri", "197 lb", "True Freshman",
+  2014, "Jason Tsirtsis", "Northwestern", "149 lb", "Redshirt Freshman",
+  2015, "Nathan Tomasello", "Ohio State", "125 lb", "Redshirt Freshman",
+  2015, "Isaiah Martinez", "Illinois", "157 lb", "Redshirt Freshman",
+  2016, "Myles Martin", "Ohio State", "174 lb", "True Freshman",
+  2017, "Mark Hall", "Penn State", "174 lb", "True Freshman",
+  2017, "Vincenzo Joseph", "Penn State", "165 lb", "Redshirt Freshman",
+  2017, "Bo Nickal", "Penn State", "184 lb", "Redshirt Freshman",
+  2018, "Spencer Lee", "Iowa", "125 lb", "True Freshman",
+  2018, "Yianni Diakomihalis", "Cornell", "141 lb", "True Freshman",
+  2019, "Mekhi Lewis", "Virginia Tech", "165 lb", "Redshirt Freshman",
+  2021, "AJ Ferrari", "Oklahoma State", "197 lb", "True Freshman",
+  2021, "David Carr", "Iowa State", "157 lb", "Redshirt Freshman",
+  2021, "Carter Starocci", "Penn State", "174 lb", "Redshirt Freshman",
+  2021, "Aaron Brooks", "Penn State", "184 lb", "Redshirt Freshman"
+)
+
+yearly_champs <- freshman_champs |>
+  group_by(year) |>
+  summarise(
+    total = n(),
+    # Build hover details listing the wrestler names, schools, weights, and status
+    details = paste(
+      paste0("• ", wrestler, " (", school, ", ", weight, " — ", type, ")"),
+      collapse = "<br>"
+    ),
+    .groups = "drop"
+  )
+
+plot_ly(
+  data = yearly_champs,
+  x = ~year,
+  y = ~total,
+  type = "scatter",
+  mode = "lines+markers",
+  marker = list(size = 10, color = "#2c7fb8"),
+  line = list(color = "#2c7fb8", width = 2.5),
+  text = ~details,
+  hovertemplate = paste(
+    "<b>Year: %{x}</b><br>",
+    "Champions: %{y}<br><br>",
+    "%{text}<extra></extra>"
+  ),
+  height = 500
+) |>
+  layout(
+    title = list(text = "NCAA Division I Freshman Champions by Year (1979–2026)"),
+    xaxis = list(
+      title = "Year",
+      dtick = 5,
+      range = c(1978, 2026.5)
+    ),
+    yaxis = list(title = "Number of Champions", dtick = 1, rangemode = "tozero")
+  )
+```

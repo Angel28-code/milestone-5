@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "explorer.html",
+    "href": "explorer.html",
+    "title": "Team & Wrestler Explorer",
+    "section": "",
+    "text": "Use the explorer below to look up any NCAA Division I wrestling team, view their all-time tournament record (2022–2025), and explore individual wrestler records."
+  },
+  {
+    "objectID": "explorer.html#team-selector",
+    "href": "explorer.html#team-selector",
+    "title": "Team & Wrestler Explorer",
+    "section": "Team selector",
+    "text": "Team selector\n\n\n\nChoose a team to filter wrestlers:"
+  },
+  {
+    "objectID": "explorer.html#wrestler-records",
+    "href": "explorer.html#wrestler-records",
+    "title": "Team & Wrestler Explorer",
+    "section": "Wrestler records",
+    "text": "Wrestler records"
+  },
+  {
+    "objectID": "explorer.html#all-time-team-summary",
+    "href": "explorer.html#all-time-team-summary",
+    "title": "Team & Wrestler Explorer",
+    "section": "All-time team summary",
+    "text": "All-time team summary\nAll-time tournament records (2022–2025) aggregated across all wrestlers for each team:"
+  },
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "",
+    "text": "I plan to make a website that gathers data from the NCAA website to help people find out more about the statistics of a team winning and takedown chances."
+  },
+  {
+    "objectID": "sources.html",
+    "href": "sources.html",
+    "title": "Sources",
+    "section": "",
+    "text": "Data sources for team scores and tournament brackets:"
+  },
+  {
+    "objectID": "sources.html#ncaa-freshman-redshirt-freshman-champions",
+    "href": "sources.html#ncaa-freshman-redshirt-freshman-champions",
+    "title": "Sources",
+    "section": "NCAA Freshman & Redshirt Freshman Champions",
+    "text": "NCAA Freshman & Redshirt Freshman Champions\nWinning an NCAA Division I wrestling title as a freshman is one of collegiate sports’ rarest achievements. This chart displays modern true freshman champions alongside notable redshirt freshman title winners."
+  },
+  {
+    "objectID": "project.html#top-10-teams-by-year",
+    "href": "project.html#top-10-teams-by-year",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Top 10 teams by year",
+    "text": "Top 10 teams by year\nEach point shows a team’s championship points for that year, with the school logo and team name. Hover over a point for the coach and exact values. Click a logo to open the official NCAA brackets/results for that season; for 2015–2021, the link opens the NCAA championship history archive. Rankings and points are from the NCAA Division I wrestling records; logos are loaded from official athletics sites and their image CDNs."
+  },
+  {
+    "objectID": "project.html#wrestler-wins-and-losses-by-weight",
+    "href": "project.html#wrestler-wins-and-losses-by-weight",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Wrestler wins and losses by weight",
+    "text": "Wrestler wins and losses by weight\nChoose a championship year and weight class to compare every wrestler in the NCAA bracket by their season wins and losses. Click a point to view the wrestler’s record and links to a bio search and the official bracket. The bracket data for 2022 and 2023–2025 are included; the 2020 tournament was canceled. The 2022 records are from the official NCAA bracket PDF.\n\n\n\n\nChampionship year\n\n2025\n2024\n2023\n2022\n\n\n \n\nWeight class\n\n125 lb\n133 lb\n141 lb\n149 lb\n157 lb\n165 lb\n174 lb\n184 lb\n197 lb\n285 lb\n\n\n\n\n\n\n\n\nFind wrestler bio\n · \nOpen official NCAA bracket"
+  },
+  {
+    "objectID": "project.html#division-ii-and-iii-championship-points",
+    "href": "project.html#division-ii-and-iii-championship-points",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Division II and III championship points",
+    "text": "Division II and III championship points\nThe Division II scatterplot compares the champion and runner-up from each of the last 10 completed championships (2015–2025; the 2020 championship was canceled). Scores are from the NCAA Division II championship history. Hover over a point for the team, placement, and points.\nThe Division III chart shows the top two scoring positions at each completed championship since 2015, including all teams tied for a position. The 2020 and 2021 championships were canceled. Scores are from the NCAA Division III championship history."
+  }
+]
