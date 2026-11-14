@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.qmd/index.html",
+    "href": "index.qmd/index.html",
+    "title": "Men’s NCAA Wrestling Statistics",
+    "section": "",
+    "text": "Compare the top 10 teams in each NCAA division. Select a division from the chart menu, or hover over a bar to see the team’s points and head coach."
+  },
+  {
+    "objectID": "index.qmd/index.html#team-championship-standings",
+    "href": "index.qmd/index.html#team-championship-standings",
+    "title": "Men’s NCAA Wrestling Statistics",
+    "section": "",
+    "text": "Compare the top 10 teams in each NCAA division. Select a division from the chart menu, or hover over a bar to see the team’s points and head coach."
+  },
+  {
+    "objectID": "index.qmd/index.html#standings",
+    "href": "index.qmd/index.html#standings",
+    "title": "Men’s NCAA Wrestling Statistics",
+    "section": "Standings",
+    "text": "Standings\nThe table keeps the division rankings and coach names together for easy comparison. Coaches marked Not verified could not be confirmed in an accessible 2024–25 source.\n\n\n\n2025 NCAA men’s wrestling championship team standings\n\n\nDivision\nRank\nTeam\nPoints\nCoach\n\n\n\n\nDivision I\n1\nPenn State\n177.0\nCael Sanderson\n\n\nDivision I\n2\nNebraska\n117.0\nMark Manning\n\n\nDivision I\n3\nOklahoma State\n107.5\nDavid Taylor\n\n\nDivision I\n4\nIowa\n81.0\nTom Brands\n\n\nDivision I\n5\nMinnesota\n51.5\nBrandon Eggum\n\n\nDivision I\n5\nOhio State\n51.5\nTom Ryan\n\n\nDivision I\n7\nCornell\n50.0\nMike Grey\n\n\nDivision I\n8\nNC State\n46.5\nPat Popolizio\n\n\nDivision I\n9\nNorthern Iowa\n45.5\nDoug Schwab\n\n\nDivision I\n10\nIllinois\n44.5\nMike Poeta\n\n\nDivision II\n1\nNebraska-Kearney\n115.0\nDalton Jensen\n\n\nDivision II\n2\nAugustana (SD)\n63.0\nJason Reitmeier\n\n\nDivision II\n3\nSt. Cloud State\n57.5\nSteve Costanzo\n\n\nDivision II\n4\nLander\n56.0\nR.C. LaHaye\n\n\nDivision II\n5\nCentral Oklahoma\n55.5\nTodd Steidley\n\n\nDivision II\n6\nUniversity of Mary\n51.0\nAdam Aho\n\n\nDivision II\n7\nCentral Missouri\n43.0\nCody Garcia\n\n\nDivision II\n8\nKutztown\n42.5\nNot verified\n\n\nDivision II\n9\nMaryville (MO)\n39.0\nNot verified\n\n\nDivision II\n10\nWest Liberty\n38.5\nDanny Irwin\n\n\nDivision III\n1\nJWU (Providence)\n83.5\nLonnie Morris\n\n\nDivision III\n2\nWartburg\n83.5\nEric Keller\n\n\nDivision III\n3\nAugsburg\n74.0\nTony Valek\n\n\nDivision III\n4\nBaldwin Wallace\n69.0\nNot verified\n\n\nDivision III\n5\nWisconsin-La Crosse\n65.0\nDave Malecek\n\n\nDivision III\n6\nCoe\n60.0\nNot verified\n\n\nDivision III\n6\nNorth Central (IL)\n60.0\nNot verified\n\n\nDivision III\n8\nAlvernia\n58.0\nKriss Bellanca\n\n\nDivision III\n9\nCoast Guard\n40.5\nKevin A. Bratland\n\n\nDivision III\n9\nWisconsin-Eau Claire\n40.5\nNot verified"
+  },
+  {
+    "objectID": "index.qmd/index.html#sources",
+    "href": "index.qmd/index.html#sources",
+    "title": "Men’s NCAA Wrestling Statistics",
+    "section": "Sources",
+    "text": "Sources\nTeam rankings and championship points are from the NCAA records:\n\nDivision I records (D1.pdf)\nDivision II records (D2.pdf)\nDivision III records (D3.pdf)\n\nCoach names are shown for the 2024–25 championship season where verified. Unverified names are marked Not verified rather than guessed."
+  },
+  {
+    "objectID": "sources.html",
+    "href": "sources.html",
+    "title": "Sources",
+    "section": "",
+    "text": "Data sources for team scores and tournament brackets:"
+  },
+  {
+    "objectID": "sources.html#ncaa-freshman-redshirt-freshman-champions",
+    "href": "sources.html#ncaa-freshman-redshirt-freshman-champions",
+    "title": "Sources",
+    "section": "NCAA Freshman & Redshirt Freshman Champions",
+    "text": "NCAA Freshman & Redshirt Freshman Champions\nWinning an NCAA Division I wrestling title as a freshman is one of collegiate sports’ rarest achievements. This chart displays modern true freshman champions alongside notable redshirt freshman title winners."
+  },
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "",
+    "text": "I plan to make a website that gathers data from the NCAA website to help people find out more about the statistics of a team winning and takedown chances."
+  },
+  {
+    "objectID": "project.html#top-10-teams-by-year",
+    "href": "project.html#top-10-teams-by-year",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Top 10 teams by year",
+    "text": "Top 10 teams by year\nEach point shows a team’s championship points for that year, with the school logo and team name. Hover over a point for the coach and exact values. Click a logo to open the official NCAA brackets/results for that season; for 2015–2021, the link opens the NCAA championship history archive. Rankings and points are from the NCAA Division I wrestling records; logos are loaded from official athletics sites and their image CDNs."
+  },
+  {
+    "objectID": "project.html#wrestler-wins-and-losses-by-weight",
+    "href": "project.html#wrestler-wins-and-losses-by-weight",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Wrestler wins and losses by weight",
+    "text": "Wrestler wins and losses by weight\nChoose a championship year and weight class to compare every wrestler in the NCAA bracket by their season wins and losses. Click a point to view the wrestler’s record and links to a bio search and the official bracket. The bracket data for 2022 and 2023–2025 are included; the 2020 tournament was canceled. The 2022 records are from the official NCAA bracket PDF.\n\n\n\n\nChampionship year\n\n2025\n2024\n2023\n2022\n\n\n \n\nWeight class\n\n125 lb\n133 lb\n141 lb\n149 lb\n157 lb\n165 lb\n174 lb\n184 lb\n197 lb\n285 lb\n\n\n\n\n\n\n\n\nFind wrestler bio\n · \nOpen official NCAA bracket"
+  },
+  {
+    "objectID": "project.html#division-ii-and-iii-championship-points",
+    "href": "project.html#division-ii-and-iii-championship-points",
+    "title": "Analysis Men’s NCAA Wrestling",
+    "section": "Division II and III championship points",
+    "text": "Division II and III championship points\nThe Division II scatterplot compares the champion and runner-up from each of the last 10 completed championships (2015–2025; the 2020 championship was canceled). Scores are from the NCAA Division II championship history. Hover over a point for the team, placement, and points.\nThe Division III chart shows the top two scoring positions at each completed championship since 2015, including all teams tied for a position. The 2020 and 2021 championships were canceled. Scores are from the NCAA Division III championship history."
+  },
+  {
+    "objectID": "story.html",
+    "href": "story.html",
+    "title": "Story",
+    "section": "",
+    "text": "Winning an NCAA Division I wrestling national championship as a true freshman or redshirt freshman is an exceptional feat. The chart below tracks every year from 2015 through 2026, showing the number of true and redshirt freshmen who stood atop the NCAA podium.\n\n\n\n\n\n\nThis graph itself shows that over time in the past three years there have been an increasing number of NCAA champs that are either true freshmans or redshirt freshmans. Meaning that the level of competition is getting higher and so does the skill along with it. This is happening mainly due to the reason that wrestling as a sport is becoming more popular so more kid programs are being made so there are kids going into college with around 15 years of wrestling under their belt. The graph fails to show that the freshman and each generation is just getting better, improving along with the sport, and that more experience might not be the factor for getting wins but being younger and hungrier for a win. So this chart is a sort of promise I made to myself that if true freshmen are able to be a national champ at the division 1 level then I am surely able to make it to an all american level within the NAIA as a freshman just getting ready to improve."
+  },
+  {
+    "objectID": "story.html#freshman-champions-over-the-past-10-years",
+    "href": "story.html#freshman-champions-over-the-past-10-years",
+    "title": "Story",
+    "section": "",
+    "text": "Winning an NCAA Division I wrestling national championship as a true freshman or redshirt freshman is an exceptional feat. The chart below tracks every year from 2015 through 2026, showing the number of true and redshirt freshmen who stood atop the NCAA podium.\n\n\n\n\n\n\nThis graph itself shows that over time in the past three years there have been an increasing number of NCAA champs that are either true freshmans or redshirt freshmans. Meaning that the level of competition is getting higher and so does the skill along with it. This is happening mainly due to the reason that wrestling as a sport is becoming more popular so more kid programs are being made so there are kids going into college with around 15 years of wrestling under their belt. The graph fails to show that the freshman and each generation is just getting better, improving along with the sport, and that more experience might not be the factor for getting wins but being younger and hungrier for a win. So this chart is a sort of promise I made to myself that if true freshmen are able to be a national champ at the division 1 level then I am surely able to make it to an all american level within the NAIA as a freshman just getting ready to improve."
+  },
+  {
+    "objectID": "explorer.html",
+    "href": "explorer.html",
+    "title": "Team & Wrestler Explorer",
+    "section": "",
+    "text": "Use the explorer below to look up any NCAA Division I wrestling team, view their all-time tournament record (2022–2025), and explore individual wrestler records."
+  },
+  {
+    "objectID": "explorer.html#team-selector",
+    "href": "explorer.html#team-selector",
+    "title": "Team & Wrestler Explorer",
+    "section": "Team selector",
+    "text": "Team selector\n\n\n\nChoose a team to filter wrestlers:"
+  },
+  {
+    "objectID": "explorer.html#wrestler-records",
+    "href": "explorer.html#wrestler-records",
+    "title": "Team & Wrestler Explorer",
+    "section": "Wrestler records",
+    "text": "Wrestler records"
+  },
+  {
+    "objectID": "explorer.html#all-time-team-summary",
+    "href": "explorer.html#all-time-team-summary",
+    "title": "Team & Wrestler Explorer",
+    "section": "All-time team summary",
+    "text": "All-time team summary\nAll-time tournament records (2022–2025) aggregated across all wrestlers for each team:"
+  }
+]
